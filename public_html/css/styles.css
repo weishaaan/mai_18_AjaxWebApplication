@@ -75,7 +75,15 @@ a:hover {
   color: #6e91b9;
 }
 
-
+table{
+    border: 1px solid black;
+}
+td{
+    border: 1px solid black;
+}
+tr{
+    border: 1px solid black;
+}
 /* page structure */
 #w {
   display: block;

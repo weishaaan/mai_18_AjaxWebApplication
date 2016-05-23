@@ -9,20 +9,63 @@
     <link rel="shortcut icon" href="http://d15dxvojnvxp1x.cloudfront.net/assets/favicon.ico">
     <link rel="icon" href="http://d15dxvojnvxp1x.cloudfront.net/assets/favicon.ico">
     <link rel="stylesheet" type="text/css" media="all" href="css/styles.css">
-    
+    <link rel="icon" href="data:;base64,=">
     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script src='script/script.js' type='text/javascript'></script>
-    
-
 </head>
 
 <body>
   <div id="w">
     <h1>Simple Ajax test </h1> 
     <div>
-    <button id="list_btn" >Click me to show the list of batch files</button>
-    <div id="dvContentul"></div>
-   <!--GET JSON DATA
+    <button type="button" onclick="getXML()">Get XML Table</button>
+    <div id="xmlTable"></div>
+    <button id="list_btn" >send GET request to web service</button>
+    <script>
+        function getXML() {
+          var xmlhttp = new XMLHttpRequest();
+          xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+              myFunction(xmlhttp);
+            }
+          };
+          xmlhttp.open("GET", "xml/batch_catalog.xml", true);
+          xmlhttp.send();
+        }
+        function myFunction(xml) {
+            var code,name,row,table,description,i,xmlDoc,row_code,row_name,row_description;
+            xmlDoc = xml.responseXML;
+            row = "";
+            code = xmlDoc.getElementsByTagName("CODE");
+            name = xmlDoc.getElementsByTagName("NAME");
+            description = xmlDoc.getElementsByTagName("DESCRIPTION");
+            table = "<table><tr> <td><b>CODE</b></td> <td><b>NAME</b></td> <td><b>DESCRIPTION</b></td> <td><b>EXECUTE</b></td></tr>";
+        
+            for (i = 0; i< code.length; i++) {
+                //table += code[i].childNodes[0].nodeValue + "<br>";
+                row_code = code[i].childNodes[0].nodeValue;
+                row_name = name[i].childNodes[0].nodeValue;
+                row_description = description[i].childNodes[0].nodeValue;
+                row += "<tr> <td>" + row_code + "</td> <td>"+ 
+                      row_name +"</td><td>"+
+                      row_description +"</td>"+
+                      "<td>"+"<input type=\"button\" name="+"\""+
+                      row_name+"\""+"value=\"execute\""+
+                      "onclick=load"+row_code+"()"+"/>"+
+                      "</td></tr>";
+              
+                 //<td><input type="button" value="07M" name="exexBtn" onclick="loadBatXml07()"/></td>
+                
+        }
+                table+=row + "</table>";
+                document.getElementById("xmlTable").innerHTML = table;
+        }
+        
+ 
+    </script>
+  
+    <!-- <div id="dvContentul"></div> -->
+    <!--GET JSON DATA
     <script>
         $('#list_btn').click(function(){ 
          $.ajax({  
@@ -71,9 +114,8 @@
     });    
     </script>
 
-
-    <button id="ok" >post Json</button>
-    
+    <button id="ok" >send POST request to web service</button>
+    <!--json    
     <script type="text/javascript">
     $(document).ready(function(){  
     $('#ok').click(function(){  
@@ -105,7 +147,7 @@
         });  
     }); 
 </script> 
-
+-->
     <script type="text/javascript">
         $(document).ready(function(){  
         $('#ok').click(function(){  
