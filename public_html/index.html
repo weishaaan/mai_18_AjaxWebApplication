@@ -21,6 +21,8 @@
     <h1>Simple Ajax test </h1> 
     <div>
     <button id="list_btn" >Click me to show the list of batch files</button>
+    <div id="dvContentul"></div>
+   <!--GET JSON DATA
     <script>
         $('#list_btn').click(function(){ 
          $.ajax({  
@@ -31,23 +33,48 @@
                 Accept:"application/json",
                 "Access-Control-Allow-Origin": "*"
            },
-           success: function(resp){  
+           success: function(data){  
              // we have the response  
-             console.log(resp)
-             alert("Success:\n '" + resp.author + "'");  
+             console.log(data)
+             alert("Success:\n '" + data.author + "'");  
            },  
-           error: function(e){  
-             console.log(resp)
-             alert('Error121212: ' + e);  
+           error: function(data){  
+             console.log(data)
+             alert('Error121212: ' + data);  
            }  
          });
-    });
-        
+    });    
+    </script>
+-->
+    <script>
+        $('#list_btn').click(function(){ 
+         $.ajax({  
+           type: "GET",  
+           url:"http://localhost:2222/home", 
+           dataType:"xml",
+           headers: {
+                Accept:"application/xml",
+                "Access-Control-Allow-Origin": "*"
+           },
+           success: function(data){  
+                $(data).find('messages').each(function(){
+                    var author = $(this).find('message').find('author').text();
+                    var message = $(this).find('message').find('message').text();
+                    $("<li></li>").html("author is :" + author + ", message is :" + message).appendTo("#dvContentul");
+                }); 
+                alert("Success:\n " + data);  
+           },  
+           error: function(data){  
+             alert('Error: ' + data);  
+           }  
+         });
+    });    
     </script>
 
-    <button id="ok" >post Json</button>
-    <script type="text/javascript">
 
+    <button id="ok" >post Json</button>
+    
+    <script type="text/javascript">
     $(document).ready(function(){  
     $('#ok').click(function(){  
         //var Msg="abc";
@@ -77,8 +104,29 @@
             });  
         });  
     }); 
-
 </script> 
+
+    <script type="text/javascript">
+        $(document).ready(function(){  
+        $('#ok').click(function(){  
+            var xmlData= "<message><author>2222apple___post__ajax</author><created>2016-05-22T22:02:48.009+02:00</created><message>hello___post__ajax</message></message>";
+            $.ajax({  
+                url:'http://localhost:2222/home',  
+                type:'POST',
+                contentType: 'application/xml', 
+                dataType: 'xml',
+                data:xmlData,
+                success: function(data) { 
+                    alert("XML:it works!"+ data);
+                },
+                failure: function(errMsg) {
+                    alert("error: " + errMsg);
+                }
+                });  
+            });  
+        }); 
+
+    </script> 
 </body>
 </html>
 
