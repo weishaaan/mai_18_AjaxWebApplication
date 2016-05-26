@@ -1,183 +1,101 @@
-<!doctype html>
-<html lang="en-US">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html">
-    <title>Ajax test</title>
-    <meta http-equiv="Access-Control-Allow-Origin" content="*”>
-    <meta name="author" content="Jake Rocheleau">
-    <link rel="shortcut icon" href="http://d15dxvojnvxp1x.cloudfront.net/assets/favicon.ico">
-    <link rel="icon" href="http://d15dxvojnvxp1x.cloudfront.net/assets/favicon.ico">
-    <link rel="stylesheet" type="text/css" media="all" href="css/styles.css">
-    <link rel="icon" href="data:;base64,=">
-    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
-    <script src='script/script.js' type='text/javascript'></script>
-</head>
-
-<body>
-  <div id="w">
-    <h1>Simple Ajax test </h1> 
-    <div>
-    <button type="button" onclick="getXML()">Get XML Table</button>
-    <div id="xmlTable"></div>
-    <button id="list_btn" >send GET request to web service</button>
-    <script>
-        function getXML() {
-          var xmlhttp = new XMLHttpRequest();
-          xmlhttp.onreadystatechange = function() {
-            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-              myFunction(xmlhttp);
-            }
-          };
-          xmlhttp.open("GET", "xml/batch_catalog.xml", true);
-          xmlhttp.send();
-        }
-        function myFunction(xml) {
-            var code,name,row,table,description,i,xmlDoc,row_code,row_name,row_description;
-            xmlDoc = xml.responseXML;
-            row = "";
-            code = xmlDoc.getElementsByTagName("CODE");
-            name = xmlDoc.getElementsByTagName("NAME");
-            description = xmlDoc.getElementsByTagName("DESCRIPTION");
-            table = "<table><tr> <td><b>CODE</b></td> <td><b>NAME</b></td> <td><b>DESCRIPTION</b></td> <td><b>EXECUTE</b></td></tr>";
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Web Page </title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+        <script src="https:/maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.css">
+        <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/locale/bootstrap-table-zh-CN.min.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <p></p>
+            <div class="well">Web Page</div>
+            <div class="row">
+                <div class="col-xs-6"><div class="well"> <button id="btn_get">GET</button></div></div>
+                <div class="col-xs-6"><div class="well"> <button id="btn_post">POST</button></div></div>
+                <div class="col-xs-6"><div class="well"> <button id="btn_xml">Get XML Table</button></div></div>                
+            </div>
+            <div>
+                <table id="table"></table>                          
+            </div>
+        </div>
         
-            for (i = 0; i< code.length; i++) {
-                //table += code[i].childNodes[0].nodeValue + "<br>";
-                row_code = code[i].childNodes[0].nodeValue;
-                row_name = name[i].childNodes[0].nodeValue;
-                row_description = description[i].childNodes[0].nodeValue;
-                row += "<tr> <td>" + row_code + "</td> <td>"+ 
-                      row_name +"</td><td>"+
-                      row_description +"</td>"+
-                      "<td>"+"<input type=\"button\" name="+"\""+
-                      row_name+"\""+"value=\"execute\""+
-                      "onclick=load"+row_code+"()"+"/>"+
-                      "</td></tr>";
-              
-                 //<td><input type="button" value="07M" name="exexBtn" onclick="loadBatXml07()"/></td>
-                
-        }
-                table+=row + "</table>";
-                document.getElementById("xmlTable").innerHTML = table;
-        }
-        
- 
-    </script>
-  
-    <!-- <div id="dvContentul"></div> -->
-    <!--GET JSON DATA
     <script>
-        $('#list_btn').click(function(){ 
-         $.ajax({  
-           type: "GET",  
-           url:"http://localhost:2222/home/1", 
-           dataType:"json",
-           headers: {
-                Accept:"application/json",
-                "Access-Control-Allow-Origin": "*"
-           },
-           success: function(data){  
-             // we have the response  
-             console.log(data)
-             alert("Success:\n '" + data.author + "'");  
-           },  
-           error: function(data){  
-             console.log(data)
-             alert('Error121212: ' + data);  
-           }  
-         });
-    });    
-    </script>
--->
-    <script>
-        $('#list_btn').click(function(){ 
-         $.ajax({  
-           type: "GET",  
-           url:"http://localhost:2222/home", 
-           dataType:"xml",
-           headers: {
-                Accept:"application/xml",
-                "Access-Control-Allow-Origin": "*"
-           },
-           success: function(data){  
-                $(data).find('messages').each(function(){
-                    var author = $(this).find('message').find('author').text();
-                    var message = $(this).find('message').find('message').text();
-                    $("<li></li>").html("author is :" + author + ", message is :" + message).appendTo("#dvContentul");
-                }); 
-                alert("Success:\n " + data);  
-           },  
-           error: function(data){  
-             alert('Error: ' + data);  
-           }  
-         });
-    });    
-    </script>
-
-    <button id="ok" >send POST request to web service</button>
-    <!--json    
-    <script type="text/javascript">
-    $(document).ready(function(){  
-    $('#ok').click(function(){  
-        //var Msg="abc";
-        //document.getElementById('msg').value = Msg;
-   
-        var JSONObject= {
-            "author": "apple5",
-            "created": 1463919419804,
-            "message": "hello5"
-        };
-        $.ajax({  
-            url:'http://localhost:2222/home',  
-            type:'POST',
-            contentType: 'application/json', 
-            data :  JSON.stringify(JSONObject),      
-            dataType: 'JSON',
-            success: function(data) { 
-                alert("success");
-                var jsonData = $.parseJSON(data); //if data is not json
-                $('#author').val(jsonData.author);  
-                $('#created').val(jsonData.created); 
-                $('#message').val(jsonData.message);  
-            },
-            failure: function(errMsg) {
-                alert(errMsg);
-            }
-            });  
-        });  
-    }); 
-</script> 
--->
-    <script type="text/javascript">
-        $(document).ready(function(){  
-        $('#ok').click(function(){  
-            var xmlData= "<message><author>2222apple___post__ajax</author><created>2016-05-22T22:02:48.009+02:00</created><message>hello___post__ajax</message></message>";
+        $('#btn_xml').click(function(){ 
             $.ajax({  
-                url:'http://localhost:2222/home',  
+                type: "GET",  
+                url:"http://localhost:3333/home/getMessage", 
+                dataType:"json",
+                success: function(data){  
+                    alert("Success:\n"); 
+                    var table_data =data;
+                    $('#table').bootstrapTable({
+                        columns: [{
+                                    field: 'author',
+                                    title: 'author'
+                                    }, {
+                                        field: 'created',
+                                        title: 'created'
+                                    }, {
+                                        field: 'id',
+                                        title: 'id'
+                                    },{
+                                        field: 'message',
+                                        title: 'message'
+                                    }],
+                                    data: table_data
+                                });
+                        },  
+                error: function(data){  
+                    alert('Error: ' + data);  
+                }  
+            });
+        });    
+        
+        $('#btn_get').click(function(){
+             $.ajax({  
+                type: "GET",  
+                url:"http://localhost:3333/home/1", 
+                dataType:"json",
+                success: function(data){  
+                  alert("Success:\n '" + "author is " +data.author + ",message is " +data.message);  
+                },  
+                error: function(data){  
+                  alert('Error: ' + data);  
+                }  
+            }); 
+        });
+
+        $('#btn_post').click(function(){
+            var JSONObject= {
+                "author": "apple_8:13pm",
+                "created": 0813,
+                "message": "hello_8:13pm"
+            };
+            $.ajax({  
+                url:'http://localhost:3333/home/postMessage',  
                 type:'POST',
-                contentType: 'application/xml', 
-                dataType: 'xml',
-                data:xmlData,
+                contentType: 'application/json', 
+                data :  JSON.stringify(JSONObject),      
+                dataType: 'JSON',
                 success: function(data) { 
-                    alert("XML:it works!"+ data);
+                    alert("success");
+                    var jsonData = $.parseJSON(data); //if data is not json
+                    $('#author').val(jsonData.author);  
+                    $('#created').val(jsonData.created); 
+                    $('#message').val(jsonData.message);  
                 },
                 failure: function(errMsg) {
-                    alert("error: " + errMsg);
+                    alert(errMsg);
                 }
                 });  
-            });  
-        }); 
-
-    </script> 
-</body>
+            });
+    </script>
+    </body>
 </html>
-
-
-
-
-
-
-
-
-
-
