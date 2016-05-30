@@ -17,7 +17,7 @@
             <p></p>
             <div class="well">Web Page</div>
             <div class="row">
-                <div class="col-xs-6"><div class="well"> <button id="btn_get">GET</button></div></div>
+                <div class="col-xs-6"><div class="well"> <button id="btn_get">GET 10:48pm</button></div></div>
                 <div class="col-xs-6"><div class="well"> <button id="btn_post">POST</button></div></div>
                 <div class="col-xs-6"><div class="well"> <button id="btn_xml">Get XML Table</button></div></div>                
             </div>
@@ -30,7 +30,7 @@
         $('#btn_xml').click(function(){ 
             $.ajax({  
                 type: "GET",  
-                url:"http://localhost:3333/home/getMessage", 
+                url:"http://localhost:8080/BatchMvnWeb/webresources/home/getMessage", 
                 dataType:"json",
                 success: function(data){  
                     alert("Success:\n"); 
@@ -44,10 +44,18 @@
                                         title: 'created'
                                     }, {
                                         field: 'id',
-                                        title: 'id'
+                                        title: 'id',
+                                        sortable: true,
                                     },{
                                         field: 'message',
                                         title: 'message'
+                                    },{
+                                        field: 'id',
+                                        title: 'Operation',
+                                        formatter: function(value,row,index) {
+                                        return "<button id="+value+" class ="+"getReturnValue"+">Click me to get details</button> " ;
+                                    },
+                                        events: 'operateEvents'
                                     }],
                                     data: table_data
                                 });
@@ -61,10 +69,10 @@
         $('#btn_get').click(function(){
              $.ajax({  
                 type: "GET",  
-                url:"http://localhost:3333/home/1", 
-                dataType:"json",
+                url:"http://localhost:8080/BatchMvnWeb/webresources/home/getMessage", 
+                dataType:"JSON",
                 success: function(data){  
-                  alert("Success:\n '" + "author is " +data.author + ",message is " +data.message);  
+                  alert("Success:\n '" + data+"author is " );  
                 },  
                 error: function(data){  
                   alert('Error: ' + data);  
@@ -73,29 +81,46 @@
         });
 
         $('#btn_post').click(function(){
-            var JSONObject= {
-                "author": "apple_8:13pm",
-                "created": 0813,
-                "message": "hello_8:13pm"
-            };
-            $.ajax({  
-                url:'http://localhost:3333/home/postMessage',  
-                type:'POST',
-                contentType: 'application/json', 
-                data :  JSON.stringify(JSONObject),      
-                dataType: 'JSON',
-                success: function(data) { 
-                    alert("success");
-                    var jsonData = $.parseJSON(data); //if data is not json
-                    $('#author').val(jsonData.author);  
-                    $('#created').val(jsonData.created); 
-                    $('#message').val(jsonData.message);  
-                },
-                failure: function(errMsg) {
-                    alert(errMsg);
-                }
-                });  
+            alert("first step");
+            $.ajax({
+            type : "POST",
+            url : "http://localhost:8080/BatchMvnWeb/webresources/home/postMessage",
+            data : JSON.stringify( {
+                    "author": "30May3:10pm",
+                    "created": "2016-05-30T13:00:19.676",
+                    "message": "1:14pm"
+            }),
+            headers: { 
+            'Accept': 'application/json',
+            'Content-Type': 'application/json' 
+            },
+            success:function(result){
+                alert("success!");
+                alert(JSON.stringify(result));
+            },
+            error:function(result){
+                alert("wrong: ");
+            }
             });
+        });
+       
+        window.operateEvents = {
+                'click': function (e, value, row, index) {
+                    alert('You click like icon, row: ');
+                    $.ajax({  
+                    type: "GET",  
+                    url:"http://localhost:8080/BatchMvnWeb/webresources/home/hello", 
+                    dataType:"text",
+                    success: function(data){  
+                        alert("Success:\n"+ data ); 
+                }
+            });
+        }
+ };
+    
+    
+    
+    
     </script>
     </body>
 </html>
