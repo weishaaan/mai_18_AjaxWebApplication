@@ -71,7 +71,7 @@
             type : "POST",
             url : "http://localhost:8080/BatchMvnWeb/webresources/home/postMessage",
             data : JSON.stringify( {
-                    "author": "30May3:10pm",
+                    "author": "11:10pm",
                     "created": "2016-05-30T13:00:19.676",
                     "message": "1:14pm"
             }),
@@ -91,15 +91,29 @@
        
         window.operateEvents = {
                 'click .save': function (e, value, row, index) {
-                    alert('Success load events!');
-                    $.ajax({  
-                    type: "GET",  
-                    url:"http://localhost:8080/BatchMvnWeb/webresources/home/hello", 
-                    dataType:"text",
-                    success: function(data){  
-                        alert("Success:\n"+ data ); 
-                }
-                });
+                    alert('Success load events! value is '+value +',row is '+ JSON.stringify(row) + ',e is '+e+',index is '+index);
+                    $.ajax({
+                        type : "POST",
+                        url : "http://localhost:8080/BatchMvnWeb/webresources/home/runBatch",
+                        data : JSON.stringify(row),
+                        headers: { 
+                        'Accept': 'application/json',   
+                        'Content-Type': 'application/json' 
+                        },
+                        /*when we use $POST, it matters that we must need to add 'Content-Type' in headers,
+                         * else we will get Unsupported Media type when we $Post,
+                         * but when we use $GET, it doesn't matter.
+                         *
+                         *http://stackoverflow.com/questions/19396696/415-unsupported-media-type-post-json-to-odata-service-in-lightswitch-2012
+                        */
+                        success:function(result){
+                            alert("success!");
+                            alert(JSON.stringify(result));
+                        },
+                        error:function(result){
+                            alert("wrong: "+ JSON.stringify(result));
+                        }
+                        });
                 }
         };
     </script>
