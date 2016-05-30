@@ -17,7 +17,6 @@
             <p></p>
             <div class="well">Web Page</div>
             <div class="row">
-                <div class="col-xs-6"><div class="well"> <button id="btn_get">GET 10:48pm</button></div></div>
                 <div class="col-xs-6"><div class="well"> <button id="btn_post">POST</button></div></div>
                 <div class="col-xs-6"><div class="well"> <button id="btn_xml">Get XML Table</button></div></div>                
             </div>
@@ -30,56 +29,42 @@
         $('#btn_xml').click(function(){ 
             $.ajax({  
                 type: "GET",  
-                url:"http://localhost:8080/BatchMvnWeb/webresources/home/getMessage", 
+                url:"http://localhost:8080/BatchMvnWeb/webresources/home/getBatch", 
                 dataType:"json",
                 success: function(data){  
                     alert("Success:\n"); 
                     var table_data =data;
                     $('#table').bootstrapTable({
                         columns: [{
-                                    field: 'author',
-                                    title: 'author'
+                                    field: 'code',
+                                    title: 'Code'
                                     }, {
-                                        field: 'created',
-                                        title: 'created'
+                                        field: 'name',
+                                        title: 'Name'
                                     }, {
-                                        field: 'id',
-                                        title: 'id',
-                                        sortable: true,
+                                        field: 'description',
+                                        title: 'Description',
                                     },{
-                                        field: 'message',
-                                        title: 'message'
+                                        field: 'output',
+                                        title: 'Output'
                                     },{
-                                        field: 'id',
+                                        field: 'operation',
                                         title: 'Operation',
-                                        formatter: function(value,row,index) {
-                                        return "<button id="+value+" class ="+"getReturnValue"+">Click me to get details</button> " ;
-                                    },
+                                        formatter:function(value,row,index){
+                                            var btn = '<button class = "save" > RUN Batch File  </button>  ';
+                                            return btn;
+                                        },
                                         events: 'operateEvents'
                                     }],
-                                    data: table_data
-                                });
-                        },  
+                        data: table_data
+                    });
+                },  
                 error: function(data){  
                     alert('Error: ' + data);  
                 }  
             });
         });    
-        
-        $('#btn_get').click(function(){
-             $.ajax({  
-                type: "GET",  
-                url:"http://localhost:8080/BatchMvnWeb/webresources/home/getMessage", 
-                dataType:"JSON",
-                success: function(data){  
-                  alert("Success:\n '" + data+"author is " );  
-                },  
-                error: function(data){  
-                  alert('Error: ' + data);  
-                }  
-            }); 
-        });
-
+       
         $('#btn_post').click(function(){
             alert("first step");
             $.ajax({
@@ -105,8 +90,8 @@
         });
        
         window.operateEvents = {
-                'click': function (e, value, row, index) {
-                    alert('You click like icon, row: ');
+                'click .save': function (e, value, row, index) {
+                    alert('Success load events!');
                     $.ajax({  
                     type: "GET",  
                     url:"http://localhost:8080/BatchMvnWeb/webresources/home/hello", 
@@ -114,13 +99,9 @@
                     success: function(data){  
                         alert("Success:\n"+ data ); 
                 }
-            });
-        }
- };
-    
-    
-    
-    
+                });
+                }
+        };
     </script>
     </body>
 </html>
