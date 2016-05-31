@@ -11,6 +11,7 @@
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.css">
         <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/locale/bootstrap-table-zh-CN.min.js"></script>
+        <link rel="shortcut icon" href="">
     </head>
     <body>
         <div class="container">
@@ -90,31 +91,30 @@
         });
        
         window.operateEvents = {
-                'click .save': function (e, value, row, index) {
-                    alert('Success load events! value is '+value +',row is '+ JSON.stringify(row) + ',e is '+e+',index is '+index);
-                    $.ajax({
-                        type : "POST",
-                        url : "http://localhost:8080/BatchMvnWeb/webresources/home/runBatch",
-                        data : JSON.stringify(row),
-                        headers: { 
-                        'Accept': 'application/json',   
-                        'Content-Type': 'application/json' 
-                        },
-                        /*when we use $POST, it matters that we must need to add 'Content-Type' in headers,
-                         * else we will get Unsupported Media type when we $Post,
-                         * but when we use $GET, it doesn't matter.
-                         *
-                         *http://stackoverflow.com/questions/19396696/415-unsupported-media-type-post-json-to-odata-service-in-lightswitch-2012
-                        */
-                        success:function(result){
-                            alert("success!");
-                            alert(JSON.stringify(result));
-                        },
-                        error:function(result){
-                            alert("wrong: "+ JSON.stringify(result));
-                        }
-                        });
-                }
+            'click .save': function (e, value, row, index) {
+                alert('Success load events! value is '+value +',row is '+ JSON.stringify(row) + ',e is '+e+',index is '+index);
+                
+                
+                
+                $.ajax({
+        url: "http://localhost:8080/BatchMvnWeb/webresources/home/runBatch",
+        type: 'POST',
+        dataType: 'text',
+        data: JSON.stringify(row),
+        headers: { 
+            'Accept': 'text/plain',
+            'Content-Type': 'application/json' 
+        },
+        success:function(result){
+                        alert("success!");
+                        alert(JSON.stringify(result));
+                    },
+                    error:function(result){
+                        alert("wrong: "+ JSON.stringify(result));
+                    }
+    })
+                
+            }
         };
     </script>
     </body>
