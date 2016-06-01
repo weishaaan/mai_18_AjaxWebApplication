@@ -30,23 +30,23 @@
         $('#btn_xml').click(function(){ 
             $.ajax({  
                 type: "GET",  
-                url:"http://localhost:8080/BatchMvnWeb/webresources/home/getBatch", 
+                url:"http://localhost:8080/BatchMvnWeb/webresources/home/getAllBatch", 
                 dataType:"json",
                 success: function(data){  
                     alert("Success:\n"); 
                     var table_data =data;
                     $('#table').bootstrapTable({
                         columns: [{
-                                    field: 'code',
+                                    field: 'CODE',
                                     title: 'Code'
                                     }, {
-                                        field: 'name',
+                                        field: 'NAME',
                                         title: 'Name'
                                     }, {
-                                        field: 'description',
+                                        field: 'DESCRIPTION',
                                         title: 'Description',
                                     },{
-                                        field: 'output',
+                                        field: 'OUTPUT',
                                         title: 'Output'
                                     },{
                                         field: 'operation',
