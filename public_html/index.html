@@ -10,8 +10,10 @@
         <script src="https:/maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.css">
         <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/locale/bootstrap-table-zh-CN.min.js"></script>
         <link rel="shortcut icon" href="">
+        <script src="//oss.maxcdn.com/bootbox/4.2.0/bootbox.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/js/bootstrapValidator.js"></script>
+
     </head>
     <body>
         <div class="container">
@@ -23,76 +25,47 @@
             </div>
             <div> <table id="table"></table> </div>
         </div>
-        
-        
-            <!-- Modal -->
-        <div class="modal fade" id="myModalHorizontal" tabindex="-1" role="dialog" 
-             aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <!-- Modal Header -->
-                    <div class="modal-header">
-                        <button type="button" class="close" 
-                           data-dismiss="modal">
-                               <span aria-hidden="true">&times;</span>
-                               <span class="sr-only">Close</span>
-                        </button>
-                        <h4 class="modal-title" id="myModalLabel">
-                            Modal title
-                        </h4>
+            
+        <!-- The form which is used to populate the item data -->
+        <form id="batchForm" method="post" class="form-horizontal" style="display: none;">
+            
+            
+                <div class="form-group">
+                    <label class="col-xs-3 control-label">No. of params</label>
+                    <div class="col-xs-3">
+                        <input type="text" class="form-control" id="param_number" disabled="disabled" />
                     </div>
-
-                    <!-- Modal Body -->
-                    <div class="modal-body">
-
-                        <form class="form-horizontal" role="form">
-                          <div class="form-group">
-                            <label  class="col-sm-2 control-label"
-                                      for="inputEmail3">Email</label>
-                            <div class="col-sm-10">
-                                <input type="email" class="form-control" 
-                                id="inputEmail3" placeholder="Email"/>
-                            </div>
-                          </div>
-                          <div class="form-group">
-                            <label class="col-sm-2 control-label"
-                                  for="inputPassword3" >Password</label>
-                            <div class="col-sm-10">
-                                <input type="password" class="form-control"
-                                    id="inputPassword3" placeholder="Password"/>
-                            </div>
-                          </div>
-                          <div class="form-group">
-                            <div class="col-sm-offset-2 col-sm-10">
-                              <div class="checkbox">
-                                <label>
-                                    <input type="checkbox"/> Remember me
-                                </label>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="form-group">
-                            <div class="col-sm-offset-2 col-sm-10">
-                              <button type="submit" class="btn btn-default">Sign in</button>
-                            </div>
-                          </div>
-                        </form>
+                </div>
+            
+            <div id="optionTemplate">
+                <div class="form-group">
+                    <label class="col-xs-3 control-label">Param Name</label>
+                    <div class="col-xs-5">
+                        <input type="text" class="form-control" name="param_name"/>
                     </div>
+                </div>
 
-                    <!-- Modal Footer -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">
-                            Close
-                        </button>
-                        <button type="button" class="btn btn-primary">
-                            Save changes
-                        </button>
+                <div class="form-group">
+                    <label class="col-xs-3 control-label">Default Value</label>
+                    <div class="col-xs-5">
+                        <input type="text" class="form-control" name="default_value"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-xs-3 control-label">Param Label</label>
+                    <div class="col-xs-5">
+                        <input type="text" class="form-control" name="param_label"/>
                     </div>
                 </div>
             </div>
-        </div>
             
-            
+            <div class="form-group">
+                <div class="col-xs-5 col-xs-offset-3">
+                    <button type="submit" class="btn btn-default" id="submitButton">Submit</button>
+                </div>
+            </div>
+        </form>    
             
     <script>
         $('#btn_xml').click(function(){ 
@@ -174,13 +147,48 @@
                 
                 if(null_input !== ''){
                     var input_length = Object.keys(input.PARAM).length;
-                    alert('input length is' + input_length);
+                    //alert('input length is' + input_length);
                     console.log('input_length is '+ input_length);
-                    document.getElementById("myModalLabel").value = 'Code is '+ code;
+                    alert('input_number is ' + input_length);
+                    $('#batchForm')
+                        .find('[id="param_number"]')
+                        .val(input_length)
+                        .end();
                     
-                    $('#myModalLabel').val("asv");
-                    $('#myModalHorizontal').modal('show');
-                
+                    var i = input_length;
+                    while(i > 1){
+                        var $template = $('#optionTemplate');
+                        var $clone = $template.clone().removeAttr('id').attr("id",i);
+                        $clone.prepend( "<p class = 'break_line'>-------------------------------------</p>" ); 
+                        $clone.insertAfter($template);
+                        i = i - 1;
+                    }
+
+                    bootbox
+                        .dialog({
+                            title: 'Input Batch ( Code is ' + code +' ) Parameters',
+                            message: $('#batchForm'),
+                            show: false // We will show it manually later
+                        })
+                        .on('shown.bs.modal', function() {
+                            $('#batchForm')
+                                .show()
+                                .bootstrapValidator('resetForm', true);// Reset form
+                                
+                        })
+                        .on('hide.bs.modal', function(e) {
+                            // Bootbox will remove the modal (including the body which contains the login form)
+                            // after hiding the modal
+                            // Therefor, we need to backup the form
+                            var j = input_length;
+                            while(j > 1){
+                                $('#'+j).remove();
+                                j = j - 1;
+                            }
+                            $(' .break_line').remove();
+                            $('#batchForm').hide().appendTo('body');
+                        })
+                        .modal('show');
                 }
                 else{
                     alert('Since input is null, so we execute immediately!');
@@ -202,27 +210,60 @@
                 })
                 }
                 
-                if(input === 'anc' ){
-                    
-                }else{
-                    
-                    
-                    
-                    
-                    //funtion showPopup(){
-                      //  $find().show();
-                    //}
-                    
-                    //function closePopup(){
-                      //  $find().hide();
-                    //}
-                    
-                }
-                    
-                
-                
-            }
+            }   
         };
+        
+        
+        
+        
+        $(document).ready(function() {
+            $('#batchForm').bootstrapValidator({
+                feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+                },
+                excluded: [':disabled'],
+                fields: {
+                    param_name: {
+                        validators: {
+                            notEmpty: {
+                                message: 'The param name required and cannot be empty'
+                            }
+                        }
+                    },
+                    default_value: {
+                        validators: {
+                            notEmpty: {
+                                message: 'The default value required and cannot be empty'
+                            }
+                        }
+                    },
+                    param_label: {
+                        validators: {
+                            notEmpty: {
+                                message: 'The param label required and cannot be empty'
+                            }
+                        }
+                    }
+                }
+            });
+            $('#batchForm').on('success.form.fv', function (e) {
+            e.preventDefault(); // Prevent form submission
+
+            var $form = $(e.target);
+
+            // Use Ajax to submit form data
+            console.log("ajax submit");
+            
+            $.post($form.attr('action'), $form.serialize(), function(result) {
+                // ... Process the result ...
+
+                // Hide the modal containing the form
+                $form.parents('.bootbox').modal('hide');
+            }, 'json');
+         });
+        });    
     </script>
     </body>
 </html>
