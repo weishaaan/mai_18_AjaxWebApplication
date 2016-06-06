@@ -27,35 +27,27 @@
         </div>
             
         <!-- The form which is used to populate the item data -->
-        <form id="batchForm" method="post" class="form-horizontal" style="display: none;">
-            
-            
-                <div class="form-group">
-                    <label class="col-xs-3 control-label">No. of params</label>
-                    <div class="col-xs-3">
-                        <input type="text" class="form-control" id="param_number" disabled="disabled" />
-                    </div>
-                </div>
+        <form id="batchForm" method="post" class="form-horizontal" style="display: none;" action="http://localhost:8080/BatchMvnWeb/webresources/home/postBatchParam">
             
             <div id="optionTemplate">
                 <div class="form-group">
                     <label class="col-xs-3 control-label">Param Name</label>
                     <div class="col-xs-5">
-                        <input type="text" class="form-control" name="param_name"/>
+                        <input type="text" class="form-control" name="PARAMNAME"/>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label class="col-xs-3 control-label">Default Value</label>
                     <div class="col-xs-5">
-                        <input type="text" class="form-control" name="default_value"/>
+                        <input type="text" class="form-control" name="DEFAULTVALUE"/>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label class="col-xs-3 control-label">Param Label</label>
                     <div class="col-xs-5">
-                        <input type="text" class="form-control" name="param_label"/>
+                        <input type="text" class="form-control" name="LABEL"/>
                     </div>
                 </div>
             </div>
@@ -74,7 +66,7 @@
                 url:"http://localhost:8080/BatchMvnWeb/webresources/home/getAllBatch", 
                 dataType:"json",
                 success: function(data){  
-                    alert("Success:\n"); 
+                    //alert("Success:\n"); 
                     var table_data =data;
                     $('#table').bootstrapTable({
                         columns: [{
@@ -133,8 +125,8 @@
        
         window.operateEvents = {
             'click .save': function (e, value, row, index) {
-                alert('Success load events! value is '+ value +',\n row is '+ JSON.stringify(row)
-                        + ',\n e is '+ e +',\n index is '+index);
+                //alert('Success load events! value is '+ value +',\n row is '+ JSON.stringify(row)
+                 //       + ',\n e is '+ e +',\n index is '+index);
                 
                 var obj = JSON.parse(JSON.stringify(row)); //get JSON data
                 var code = obj.CODE;
@@ -150,10 +142,6 @@
                     //alert('input length is' + input_length);
                     console.log('input_length is '+ input_length);
                     alert('input_number is ' + input_length);
-                    $('#batchForm')
-                        .find('[id="param_number"]')
-                        .val(input_length)
-                        .end();
                     
                     var i = input_length;
                     while(i > 1){
@@ -171,15 +159,15 @@
                             show: false // We will show it manually later
                         })
                         .on('shown.bs.modal', function() {
-                            $('#batchForm')
-                                .show()
-                                .bootstrapValidator('resetForm', true);// Reset form
-                                
+                            $('#batchForm').show();
+                            $('#batchForm').bootstrapValidator('resetForm', true);// Reset form
                         })
                         .on('hide.bs.modal', function(e) {
                             // Bootbox will remove the modal (including the body which contains the login form)
                             // after hiding the modal
                             // Therefor, we need to backup the form
+                            $('#batchForm').bootstrapValidator('resetForm', true);// Reset form
+                       
                             var j = input_length;
                             while(j > 1){
                                 $('#'+j).remove();
@@ -214,10 +202,9 @@
         };
         
         
-        
-        
-        $(document).ready(function() {
-            $('#batchForm').bootstrapValidator({
+        $(document).ready(function() {    
+            $('#batchForm')
+            .bootstrapValidator({
                 feedbackIcons: {
                 valid: 'glyphicon glyphicon-ok',
                 invalid: 'glyphicon glyphicon-remove',
@@ -225,21 +212,21 @@
                 },
                 excluded: [':disabled'],
                 fields: {
-                    param_name: {
+                    PARAMNAME: {
                         validators: {
                             notEmpty: {
                                 message: 'The param name required and cannot be empty'
                             }
                         }
                     },
-                    default_value: {
+                    DEFAULTVALUE: {
                         validators: {
                             notEmpty: {
                                 message: 'The default value required and cannot be empty'
                             }
                         }
                     },
-                    param_label: {
+                    LABEL: {
                         validators: {
                             notEmpty: {
                                 message: 'The param label required and cannot be empty'
@@ -247,23 +234,71 @@
                         }
                     }
                 }
-            });
-            $('#batchForm').on('success.form.fv', function (e) {
-            e.preventDefault(); // Prevent form submission
-
-            var $form = $(e.target);
-
-            // Use Ajax to submit form data
-            console.log("ajax submit");
+            })
+           
+            .on('success.form.fv', function(e) {
+                // Prevent form submission
+                e.preventDefault();
+                e.stopImmediatePropagation();
+            });;
+             
+           
             
-            $.post($form.attr('action'), $form.serialize(), function(result) {
-                // ... Process the result ...
-
-                // Hide the modal containing the form
-                $form.parents('.bootbox').modal('hide');
-            }, 'json');
-         });
-        });    
+            $('#batchForm').submit(function(e){
+                e.preventDefault(); //STOP default action
+                e.stopImmediatePropagation();
+                
+                var $form = $(e.target);
+                var data_form = JSON.stringify($('#batchForm').serializeObject());
+                //alert($('#batchForm').serializeArray());
+                alert(data_form);
+                $.ajax({
+                        url: $form.attr('action'),
+                        type: 'POST',
+                        data: data_form,
+                        dataType:'text',
+                        cache: false,
+                        headers: { 
+                        'Accept': 'text/plain',
+                        'Content-Type': 'application/json' 
+                        },
+                        success: function (result) {
+                            alert(result);
+                            console.log("ajax submit")
+                        },  
+                        error:function(result){
+                            alert("wrong: " +result);
+                        }
+                        
+                });
+                
+                return false;
+            }); 
+        }); 
+        
+        $.fn.serializeObject = function(){
+            var list = {};
+            var x = [];
+            var a = this.serializeArray();
+            var i = 0;
+            $.each(a, function() {
+                if(list[this.name] !== undefined) {
+                    if(!list[this.name].push) {
+                        list[this.name] = [list[this.name]];
+                    }
+                    list[this.name].push(this.value || '');
+                }else{
+                    list[this.name] = this.value || '';
+                }
+                i = i+1;
+                if((i !== 0 ) && (i%3 === 0)) {
+                    x.push(list);
+                    list = {};
+                }
+            });
+            return x;
+        };
+        
     </script>
     </body>
 </html>
