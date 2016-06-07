@@ -26,28 +26,23 @@
             <div> <table id="table"></table> </div>
         </div>
             
-        <!-- The form which is used to populate the item data -->
+        <!-- The form which is used to populate the item data .......-->
         <form id="batchForm" method="post" class="form-horizontal" style="display: none;" action="http://localhost:8080/BatchMvnWeb/webresources/home/postBatchParam">
+            
+            <div id="divCodeName" style="display: none;" >
+                <div class="form-group">
+                    <label class="col-xs-3 control-label">Batch Code</label>
+                    <div class="col-xs-5">
+                        <input type="text" class="form-control" name="paramCode" />
+                    </div>
+                </div>
+            </div>
             
             <div id="optionTemplate">
                 <div class="form-group">
-                    <label class="col-xs-3 control-label">Param Name</label>
+                    <label for='label' class="col-xs-3 control-label" id = "paramLabel">Param Label</label>
                     <div class="col-xs-5">
-                        <input type="text" class="form-control" name="PARAMNAME"/>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="col-xs-3 control-label">Default Value</label>
-                    <div class="col-xs-5">
-                        <input type="text" class="form-control" name="DEFAULTVALUE"/>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="col-xs-3 control-label">Param Label</label>
-                    <div class="col-xs-5">
-                        <input type="text" class="form-control" name="LABEL"/>
+                        <input type="text" class="form-control paramInputClass" name="paramPostValue" />
                     </div>
                 </div>
             </div>
@@ -131,27 +126,36 @@
                 var obj = JSON.parse(JSON.stringify(row)); //get JSON data
                 var code = obj.CODE;
                 var name = obj.NAME;
+                var description = obj.DESCRIPTION;
                 var output = obj.OUTPUT;
                 var input = obj.INPUT;
                 var null_input = JSON.stringify(input).substr(1,JSON.stringify(input).length-2);
                 //if input is null, JSON will give us '{}'. so null_input will give us ' '
                 //then we use this null_input to judge.
                 
+                $('#batchForm').find('input[name="paramCode"]').val(code).end();
+                
+                
                 if(null_input !== ''){
+                    
                     var input_length = Object.keys(input.PARAM).length;
-                    //alert('input length is' + input_length);
                     console.log('input_length is '+ input_length);
-                    alert('input_number is ' + input_length);
+                    $("label[for='label']").text(input.PARAM[0].LABEL);
+                    $('input .paramInputClass').attr('id', input.PARAM[0].PARAMNAME);
                     
                     var i = input_length;
-                    while(i > 1){
-                        var $template = $('#optionTemplate');
-                        var $clone = $template.clone().removeAttr('id').attr("id",i);
-                        $clone.prepend( "<p class = 'break_line'>-------------------------------------</p>" ); 
-                        $clone.insertAfter($template);
-                        i = i - 1;
+                    var k =1;
+                    if(i > 1){
+                        while(k<i){
+                            var $template = $('#optionTemplate');
+                            var $clone = $template.clone().removeAttr('id').attr("id",i);
+                            $clone.find("label[for='label']").text(input.PARAM[k].LABEL);
+                            $clone.find('input .paramInputClass').attr('id', input.PARAM[k].PARAMNAME);
+                            $clone.prepend( "<p class = 'break_line'>-------------------------------------</p>" ); 
+                            $clone.insertAfter($template);
+                            k = k+1;
+                        }
                     }
-
                     bootbox
                         .dialog({
                             title: 'Input Batch ( Code is ' + code +' ) Parameters',
@@ -160,7 +164,7 @@
                         })
                         .on('shown.bs.modal', function() {
                             $('#batchForm').show();
-                            $('#batchForm').bootstrapValidator('resetForm', true);// Reset form
+                            //$('#batchForm').bootstrapValidator('resetForm', true);// Reset form
                         })
                         .on('hide.bs.modal', function(e) {
                             // Bootbox will remove the modal (including the body which contains the login form)
@@ -204,7 +208,7 @@
         
         $(document).ready(function() {    
             $('#batchForm')
-            .bootstrapValidator({
+        /*    .bootstrapValidator({
                 feedbackIcons: {
                 valid: 'glyphicon glyphicon-ok',
                 invalid: 'glyphicon glyphicon-remove',
@@ -212,21 +216,21 @@
                 },
                 excluded: [':disabled'],
                 fields: {
-                    PARAMNAME: {
+                    paramPostName: {
                         validators: {
                             notEmpty: {
                                 message: 'The param name required and cannot be empty'
                             }
                         }
                     },
-                    DEFAULTVALUE: {
+                    paramPostDefaultValue: {
                         validators: {
                             notEmpty: {
                                 message: 'The default value required and cannot be empty'
                             }
                         }
                     },
-                    LABEL: {
+                    paramPostLABEL: {
                         validators: {
                             notEmpty: {
                                 message: 'The param label required and cannot be empty'
@@ -241,17 +245,15 @@
                 e.preventDefault();
                 e.stopImmediatePropagation();
             });;
-             
-           
-            
+        */    
             $('#batchForm').submit(function(e){
                 e.preventDefault(); //STOP default action
                 e.stopImmediatePropagation();
                 
                 var $form = $(e.target);
                 var data_form = JSON.stringify($('#batchForm').serializeObject());
-                //alert($('#batchForm').serializeArray());
-                alert(data_form);
+                alert($('#batchForm').serializeArray());
+                alert("post data : "+data_form);
                 $.ajax({
                         url: $form.attr('action'),
                         type: 'POST',
@@ -269,18 +271,15 @@
                         error:function(result){
                             alert("wrong: " +result);
                         }
-                        
                 });
-                
                 return false;
             }); 
         }); 
         
-        $.fn.serializeObject = function(){
+         $.fn.serializeObject = function(){
             var list = {};
             var x = [];
             var a = this.serializeArray();
-            var i = 0;
             $.each(a, function() {
                 if(list[this.name] !== undefined) {
                     if(!list[this.name].push) {
@@ -290,15 +289,12 @@
                 }else{
                     list[this.name] = this.value || '';
                 }
-                i = i+1;
-                if((i !== 0 ) && (i%3 === 0)) {
-                    x.push(list);
-                    list = {};
-                }
+                x.push(list);
+                list = {};
             });
             return x;
         };
-        
+
     </script>
     </body>
 </html>
