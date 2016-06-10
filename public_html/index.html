@@ -139,10 +139,8 @@
                 $('#batchForm').find('input[name="paramCode"]').val(code).end();
                 
                 if(null_input !== ''){
-                    
                     var input_length = Object.keys(input.PARAM).length;
                     console.log('input_length is '+ input_length);
-                    alert("label is :"+input.PARAM[0].LABEL);
                     var i,k;
                     for(i = input_length-1 ; i>=0 ; i--){
                         var k = $('#optionTemplate').clone().removeAttr('style').removeAttr('id').attr("id",i+1);
