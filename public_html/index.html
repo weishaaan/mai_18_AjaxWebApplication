@@ -25,7 +25,17 @@
             </div>
             <div> <table id="table"></table> </div>
         </div>
-            
+        
+        
+            <div id="optionTemplate" style="display: none;">
+                <div class="form-group">
+                    <label for='label' class="col-xs-3 control-label" name = "paramLabel">Param Label</label>
+                    <div class="col-xs-5">
+                        <input type="text" class="form-control paramInputClass" name="paramPostValue" />
+                    </div>
+                </div>
+            </div>
+           
         <!-- The form which is used to populate the item data .......-->
         <form id="batchForm" method="post" class="form-horizontal" style="display: none;" action="http://localhost:8080/BatchMvnWeb/webresources/home/postTestBatchParam">
             
@@ -38,14 +48,7 @@
                 </div>
             </div>
             
-            <div id="optionTemplate">
-                <div class="form-group">
-                    <label for='label' class="col-xs-3 control-label" id = "paramLabel">Param Label</label>
-                    <div class="col-xs-5">
-                        <input type="text" class="form-control paramInputClass" name="paramPostValue" />
-                    </div>
-                </div>
-            </div>
+            
             
             <div class="form-group">
                 <div class="col-xs-5 col-xs-offset-3">
@@ -135,27 +138,21 @@
                 
                 $('#batchForm').find('input[name="paramCode"]').val(code).end();
                 
-                
                 if(null_input !== ''){
                     
                     var input_length = Object.keys(input.PARAM).length;
                     console.log('input_length is '+ input_length);
-                    $("label[for='label']").text(input.PARAM[0].LABEL);
-                    $('input .paramInputClass').attr('id', input.PARAM[0].PARAMNAME);
-                    
-                    var i = input_length;
-                    var k =1;
-                    if(i > 1){
-                        while(k<i){
-                            var $template = $('#optionTemplate');
-                            var $clone = $template.clone().removeAttr('id').attr("id",i);
-                            $clone.find("label[for='label']").text(input.PARAM[k].LABEL);
-                            $clone.find('input .paramInputClass').attr('id', input.PARAM[k].PARAMNAME);
-                            $clone.prepend( "<p class = 'break_line'>-------------------------------------</p>" ); 
-                            $clone.insertAfter($template);
-                            k = k+1;
-                        }
+                    alert("label is :"+input.PARAM[0].LABEL);
+                    var i,k;
+                    for(i = input_length-1 ; i>=0 ; i--){
+                        var k = $('#optionTemplate').clone().removeAttr('style').removeAttr('id').attr("id",i+1);
+                        k.find('label[name="paramLabel"]').text(input.PARAM[i].LABEL);
+                        k.find('input[name="paramPostValue"]').val(input.PARAM[i].DEFAULTVALUE).end();
+                        k.find('input[name="paramPostValue"]').attr('id', input.PARAM[i].PARAMNAME);
+                        k.find('input[name="paramPostValue"]').attr('name', input.PARAM[i].PARAMNAME);
+                        k.insertAfter($('#divCodeName'));
                     }
+                    
                     bootbox
                         .dialog({
                             title: 'Input Batch ( Code is ' + code +' ) Parameters',
@@ -173,11 +170,10 @@
                             $('#batchForm').bootstrapValidator('resetForm', true);// Reset form
                        
                             var j = input_length;
-                            while(j > 1){
+                            while(j > 0){
                                 $('#'+j).remove();
                                 j = j - 1;
                             }
-                            $(' .break_line').remove();
                             $('#batchForm').hide().appendTo('body');
                         })
                         .modal('show');
