@@ -147,7 +147,6 @@
                         k.find('label[name="paramLabel"]').text(input.PARAM[i].LABEL);
                         k.find('input[name="paramPostValue"]').val(input.PARAM[i].DEFAULTVALUE).end();
                         k.find('input[name="paramPostValue"]').attr('id', input.PARAM[i].PARAMNAME);
-                        k.find('input[name="paramPostValue"]').attr('name', input.PARAM[i].PARAMNAME);
                         k.insertAfter($('#divCodeName'));
                     }
                     
@@ -166,7 +165,6 @@
                             // after hiding the modal
                             // Therefor, we need to backup the form
                             $('#batchForm').bootstrapValidator('resetForm', true);// Reset form
-                       
                             var j = input_length;
                             while(j > 0){
                                 $('#'+j).remove();
@@ -247,7 +245,7 @@
                 var $form = $(e.target);
                 var data_form = JSON.stringify($('#batchForm').serializeObject());
                 //alert($('#batchForm').serializeArray());
-                //alert("post data : "+data_form);
+                alert("post data : "+data_form);
                 $.ajax({
                         url: $form.attr('action'),
                         type: 'POST',
