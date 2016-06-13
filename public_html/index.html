@@ -147,6 +147,8 @@
                         k.find('label[name="paramLabel"]').text(input.PARAM[i].LABEL);
                         k.find('input[name="paramPostValue"]').val(input.PARAM[i].DEFAULTVALUE).end();
                         k.find('input[name="paramPostValue"]').attr('id', input.PARAM[i].PARAMNAME);
+                        k.find('input[name="paramPostValue"]').attr('name', input.PARAM[i].PARAMNAME);
+                        //k.find('input[name="paramPostValue"]').attr('name', "INPUTVALUE");
                         k.insertAfter($('#divCodeName'));
                     }
                     
