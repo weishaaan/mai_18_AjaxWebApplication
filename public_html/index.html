@@ -43,7 +43,7 @@
                 <div class="form-group">
                     <label class="col-xs-3 control-label">Batch Code</label>
                     <div class="col-xs-5">
-                        <input type="text" class="form-control" name="paramCode" />
+                        <input type="text" class="form-control" name="INPUTVALUE" />
                     </div>
                 </div>
             </div>
@@ -136,7 +136,7 @@
                 //if input is null, JSON will give us '{}'. so null_input will give us ' '
                 //then we use this null_input to judge.
                 
-                $('#batchForm').find('input[name="paramCode"]').val(code).end();
+                $('#batchForm').find('input[name="INPUTVALUE"]').val(code).end();
                 
                 if(null_input !== ''){
                     var input_length = Object.keys(input.PARAM).length;
@@ -147,8 +147,8 @@
                         k.find('label[name="paramLabel"]').text(input.PARAM[i].LABEL);
                         k.find('input[name="paramPostValue"]').val(input.PARAM[i].DEFAULTVALUE).end();
                         k.find('input[name="paramPostValue"]').attr('id', input.PARAM[i].PARAMNAME);
-                        k.find('input[name="paramPostValue"]').attr('name', input.PARAM[i].PARAMNAME);
-                        //k.find('input[name="paramPostValue"]').attr('name', "INPUTVALUE");
+                        //k.find('input[name="paramPostValue"]').attr('name', input.PARAM[i].PARAMNAME);
+                        k.find('input[name="paramPostValue"]').attr('name', "INPUTVALUE");
                         k.insertAfter($('#divCodeName'));
                     }
                     
