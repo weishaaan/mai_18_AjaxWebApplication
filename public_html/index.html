@@ -13,19 +13,33 @@
         <link rel="shortcut icon" href="">
         <script src="//oss.maxcdn.com/bootbox/4.2.0/bootbox.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/js/bootstrapValidator.js"></script>
-
     </head>
     <body>
         <div class="container">
             <p></p>
-            <div class="well">Web Page</div>
+            <div id="abc" class="well">Web Page</div>
             <div class="row">
-                <div class="col-xs-6"><div class="well"> <button id="btn_post">POST</button></div></div>
                 <div class="col-xs-6"><div class="well"> <button id="btn_xml">Get XML Table</button></div></div>                
             </div>
-            <div> <table id="table"></table> </div>
+            
+            <ul id="tabs" class="nav nav-tabs" style="display: none;">
+                <li class="active"><a href="#info-tab" data-toggle="tab"> Home <i class="fa"></i></a></li>
+                <li><a href="#extractions-tab" data-toggle="tab"> Extractions Divalto <i class="fa"></i></a></li>
+                <li><a href="#logistique-tab" data-toggle="tab"> Logistique <i class="fa"></i></a></li>
+                <li><a href="#etiquettes-tab" data-toggle="tab"> Etiquettes <i class="fa"></i></a></li>
+            </ul>
+            
+            <div class="tab-content">
+                <div class="tab-pane active" id="info-tab">
+                    </br>
+                    <table id="table"></table>
+                </div>
+                <div class="tab-pane" id="extractions-tab"></br></div>
+                <div class="tab-pane" id="logistique-tab"></br></div>
+                <div class="tab-pane" id="etiquettes-tab"></br></div>
+            </div>
         </div>
-        
+            
         
             <div id="optionTemplate" style="display: none;">
                 <div class="form-group">
@@ -36,7 +50,6 @@
                 </div>
             </div>
            
-        <!-- The form which is used to populate the item data .......-->
         <form id="batchForm" method="post" class="form-horizontal" style="display: none;" action="http://localhost:8080/BatchMvnWeb/webresources/home/postTestBatchParam">
             
             <div id="divCodeName" style="display: none;" >
@@ -49,7 +62,6 @@
             </div>
             
             
-            
             <div class="form-group">
                 <div class="col-xs-5 col-xs-offset-3">
                     <button type="submit" class="btn btn-default" id="submitButton">Submit</button>
@@ -59,37 +71,71 @@
             
     <script>
         $('#btn_xml').click(function(){ 
+            $('#tabs').removeAttr('style');
             $.ajax({  
                 type: "GET",  
                 url:"http://localhost:8080/BatchMvnWeb/webresources/home/getAllBatch", 
-                dataType:"json",
+                dataType:"json", 
                 success: function(data){  
                     //alert("Success:\n"); 
                     var table_data =data;
                     $('#table').bootstrapTable({
-                        columns: [{
+                        columns:[{
                                     field: 'CODE',
                                     title: 'Code'
                                     }, {
-                                        field: 'NAME',
-                                        title: 'Name'
+                                    field: 'NAME',
+                                    title: 'Name'
                                     }, {
-                                        field: 'DESCRIPTION',
-                                        title: 'Description',
+                                    field: 'DESCRIPTION',
+                                    title: 'Description',
                                     },{
-                                        field: 'OUTPUT',
-                                        title: 'Output'
+                                    field: 'OUTPUT',
+                                    title: 'Output'
                                     },{
-                                        field: 'operation',
-                                        title: 'Operation',
-                                        formatter:function(value,row,index){
-                                            var btn = '<button class = "save" > RUN Batch File  </button>  ';
-                                            return btn;
-                                        },
-                                        events: 'operateEvents'
+                                    field: 'CATEGORY',
+                                    title: 'Category',
+                                    
+                                    },{
+                                    field: 'operation',
+                                    title: 'Operation',
+                                    
+                                    formatter:function(value,row,index){
+                                        var btn = '<button class = "save" > RUN Batch File  </button>  ';
+                                        return btn;
+                                    },
+                                    events: 'operateEvents'
                                     }],
                         data: table_data
                     });
+                    
+                    var m = jQuery(".bootstrap-table:first").clone(true);
+                    jQuery(m).find('#table').removeAttr('id').attr('id','table_extractions');
+                    jQuery(m).find('#table_extractions tbody tr').each(function(){
+                        var value = $(this).find(':nth-child(5)').html();
+                        if(value !== 'Extractions Divalto')
+                            $(this).closest('tr').remove();
+                    });
+                    $('#extractions-tab').append(m);
+                    
+                    var m2 = jQuery(".bootstrap-table:first").clone(true);
+                    jQuery(m2).find('#table').removeAttr('id').attr('id','table_logistique');
+                    jQuery(m2).find('#table_logistique tbody tr').each(function(){
+                        var value = $(this).find(':nth-child(5)').html();
+                        if(value !== 'Logistique')
+                            $(this).closest('tr').remove();
+                    });
+                    $('#logistique-tab').append(m2);
+                    
+                    var m3 = jQuery(".bootstrap-table:first").clone(true);
+                    jQuery(m3).find('#table').removeAttr('id').attr('id','table_etiquettes');
+                    jQuery(m3).find('#table_etiquettes tbody tr').each(function(){
+                        var value = $(this).find(':nth-child(5)').html();
+                        if(value !== 'Etiquettes')
+                            $(this).closest('tr').remove();
+                    });
+                    $('#etiquettes-tab').append(m3);
+                    
                 },  
                 error: function(data){  
                     alert('Error: ' + data);  
