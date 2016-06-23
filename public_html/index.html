@@ -39,22 +39,21 @@
                 <div class="tab-pane" id="etiquettes-tab"></br></div>
             </div>
         </div>
-            
         
-            <div id="optionTemplate" style="display: none;">
-                <div class="form-group">
-                    <label for='label' class="col-xs-3 control-label" name = "paramLabel">Param Label</label>
-                    <div class="col-xs-5">
-                        <input type="text" class="form-control paramInputClass" name="paramPostValue" />
-                    </div>
+        <div id="optionTemplate" style="display: none;">
+            <div class="form-group">
+                <label for='paramPostValue' class="col-xs-3 control-label" name = "paramLabel">Param Label</label>
+                <div class="col-xs-5">
+                    <input type="text" class="form-control paramInputClass" name="paramPostValue" />
                 </div>
             </div>
+        </div>
            
         <form id="batchForm" method="post" class="form-horizontal" style="display: none;" action="http://localhost:8080/BatchMvnWeb/webresources/home/postTestBatchParam">
             
             <div id="divCodeName" style="display: none;" >
                 <div class="form-group">
-                    <label class="col-xs-3 control-label">Batch Code</label>
+                    <label for='INPUTVALUE' class="col-xs-3 control-label">Batch Code</label>
                     <div class="col-xs-5">
                         <input type="text" class="form-control" name="INPUTVALUE" />
                     </div>
@@ -81,25 +80,17 @@
                     var table_data =data;
                     $('#table').bootstrapTable({
                         columns:[{
-                                    field: 'CODE',
-                                    title: 'Code'
+                                    field: 'CODE',title: 'Code'
                                     }, {
-                                    field: 'NAME',
-                                    title: 'Name'
+                                    field: 'NAME',title: 'Name'
                                     }, {
-                                    field: 'DESCRIPTION',
-                                    title: 'Description',
+                                    field: 'DESCRIPTION',title: 'Description',
                                     },{
-                                    field: 'OUTPUT',
-                                    title: 'Output'
+                                    field: 'OUTPUT',title: 'Output'
                                     },{
-                                    field: 'CATEGORY',
-                                    title: 'Category',
-                                    
+                                    field: 'CATEGORY',title: 'Category',
                                     },{
-                                    field: 'operation',
-                                    title: 'Operation',
-                                    
+                                    field: 'operation',title: 'Operation',
                                     formatter:function(value,row,index){
                                         var btn = '<button class = "save" > RUN Batch File  </button>  ';
                                         return btn;
@@ -191,6 +182,7 @@
                     for(i = input_length-1 ; i>=0 ; i--){
                         var k = $('#optionTemplate').clone().removeAttr('style').removeAttr('id').attr("id",i+1);
                         k.find('label[name="paramLabel"]').text(input.PARAM[i].LABEL);
+                        k.find('label[name="paramLabel"]').attr('for',"INPUTVALUE");
                         k.find('input[name="paramPostValue"]').val(input.PARAM[i].DEFAULTVALUE).end();
                         k.find('input[name="paramPostValue"]').attr('id', input.PARAM[i].PARAMNAME);
                         //k.find('input[name="paramPostValue"]').attr('name', input.PARAM[i].PARAMNAME);
