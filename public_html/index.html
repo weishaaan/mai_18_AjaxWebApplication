@@ -21,6 +21,11 @@
             <div class="row">
                 <div class="col-xs-6"><div class="well"> <button id="btn_xml">Get XML Table</button></div></div>                
             </div>
+           
+            <p id="demo"></p>
+
+            
+            
             
             <ul id="tabs" class="nav nav-tabs" style="display: none;">
                 <li class="active"><a href="#info-tab" data-toggle="tab"> Home <i class="fa"></i></a></li>
@@ -49,7 +54,7 @@
             </div>
         </div>
            
-        <form id="batchForm" method="post" class="form-horizontal" style="display: none;" action="http://localhost:8080/BatchMvnWeb/webresources/home/postTestBatchParam">
+        <form id="batchForm" method="post" class="form-horizontal" style="display: none;" action="url3">
             
             <div id="divCodeName" style="display: none;" >
                 <div class="form-group">
@@ -60,7 +65,6 @@
                 </div>
             </div>
             
-            
             <div class="form-group">
                 <div class="col-xs-5 col-xs-offset-3">
                     <button type="submit" class="btn btn-default" id="submitButton">Submit</button>
@@ -69,11 +73,28 @@
         </form>    
             
     <script>
+        var xhttp = new XMLHttpRequest();
+        var url1,url2,url3;
+        xhttp.onload = function() {
+            myFunction(xhttp);
+        };
+        xhttp.open("GET", "config.xml", true);
+        xhttp.send();
+
+        function myFunction(xhttp) {
+            var xmlDoc = xhttp.responseXML;
+            url1 = xmlDoc.getElementsByTagName("url1")[0].childNodes[0].nodeValue;
+            url2 = xmlDoc.getElementsByTagName("url2")[0].childNodes[0].nodeValue;
+            url3 = xmlDoc.getElementsByTagName("url3")[0].childNodes[0].nodeValue;
+            k = $('#batchForm').removeAttr('action').attr("action",url3);
+        }
+        
         $('#btn_xml').click(function(){ 
+            alert("in ajax :" + url1);
             $('#tabs').removeAttr('style');
             $.ajax({  
                 type: "GET",  
-                url:"http://localhost:8080/BatchMvnWeb/webresources/home/getAllBatch", 
+                url: url1,//"http://localhost:8080/BatchMvnWeb/webresources/home/getAllBatch"
                 dataType:"json", 
                 success: function(data){  
                     //alert("Success:\n"); 
@@ -134,29 +155,6 @@
             });
         });    
        
-        $('#btn_post').click(function(){
-            alert("first step");
-            $.ajax({
-            type : "POST",
-            url : "http://localhost:8080/BatchMvnWeb/webresources/home/postMessage",
-            data : JSON.stringify( {
-                    "author": "11:10pm",
-                    "created": "2016-05-30T13:00:19.676",
-                    "message": "1:14pm"
-            }),
-            headers: { 
-            'Accept': 'application/json',
-            'Content-Type': 'application/json' 
-            },
-            success:function(result){
-                alert("success!");
-                alert(JSON.stringify(result));
-            },
-            error:function(result){
-                alert("wrong: ");
-            }
-            });
-        });
        
         window.operateEvents = {
             'click .save': function (e, value, row, index) {
@@ -217,7 +215,7 @@
                 else{
                     alert('Since input is null, so we execute immediately!');
                     $.ajax({
-                    url: "http://localhost:8080/BatchMvnWeb/webresources/home/runBatch",
+                    url: url2,//"http://localhost:8080/BatchMvnWeb/webresources/home/runBatch",
                     type: 'POST',
                     dataType: 'text',
                     data: JSON.stringify(row),
