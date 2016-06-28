@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
-    <url1>http://localhost:8080/BatchMvnWeb/webresources/home/getAllBatch</url1>
-    <url2>http://localhost:8080/BatchMvnWeb/webresources/home/runBatch</url2>
-    <url3>http://localhost:8080/BatchMvnWeb/webresources/home/postTestBatchParam</url3>
+    <url1>http://localhost:8080/Batch_Maven_WebApp/webresources/home/getAllBatch</url1>
+    <url2>http://localhost:8080/Batch_Maven_WebApp/webresources/home/runBatch</url2>
+    <url3>http://localhost:8080/Batch_Maven_WebApp/webresources/home/postTestBatchParam</url3>
 </configuration>
